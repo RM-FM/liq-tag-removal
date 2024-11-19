@@ -1,6 +1,6 @@
 # liq-tag-removal
 
-I created a script designed to remove all `liq_` tags from Azuracast media files. This can be useful if you previously enabled the "store tags to file" option in Azuracast's older `autocue.cue_in` implementation. These tags are conflict with the updated Azuracast Rolling Release, which uses Liquidsoap 2.3.x's `autocue.internal`. It also comes with a dry run feature to initially check your files without making any changes.
+I created a script designed to remove all `liq_` tags from Azuracast media files. This can be useful if you previously enabled the "store tags to file" option in Azuracast's older `autocue.cue_in` implementation. These tags conflict with the updated Azuracast Rolling Release, which uses Liquidsoap 2.3.x's `autocue.internal`. It also comes with a dry run feature to initially check your files without making any changes.
 
 
 >[!CAUTION]
