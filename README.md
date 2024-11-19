@@ -41,7 +41,7 @@ options:
   -h, --help            show this help message and exit
   -p PATH, --path PATH  Path to directory with audio files
   -e EXTENSIONS, --extensions EXTENSIONS
-                        File extension pattern (comma-separated, default: mp3,flac,ogg,opus,m4a,wav,aiff,ape)
+                        File extension pattern (comma-separated, default: mp3)
   -r, --remove-replaygain
                         Remove "replaygain_" tags
   -b, --backup-metadata
