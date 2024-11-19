@@ -3,6 +3,11 @@
 >[!CAUTION]
 >Backup your system / audio files first!
 
+> [!IMPORTANT]
+> Please also ensure that you have cleared the Extra Metadata in Azuracast's Media File Manager, as older versions of Azuracast may have stored these values there as well:
+>
+>`Media > Music Files > set search to show ALL > select ALL > More > Clear Extra Metadata`
+
 ### Install script
 ```
 cd /var/azuracast
