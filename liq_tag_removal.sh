@@ -85,38 +85,57 @@ def main():
                 filepath = os.path.join(root, file)
                 #print(f'Processing file: {file}')
 
-                try:
-                    audio = ID3(filepath)
-                except ID3NoHeaderError:
-                    print(f"No ID3 tag found in {file}. Skipping.")
-                    continue
-
                 tags_to_remove = []
-                for tag in audio.keys():
-                    frame = audio[tag]
-                    if isinstance(frame, TXXX):
-                        desc = frame.desc
-                        if desc.startswith('liq_') or (args.remove_replaygain and desc.startswith('replaygain_')):
-                            tags_to_remove.append(tag)
-                            if args.backup_metadata:
-                                csv_writer.writerow([filepath, tag, desc, frame.text[0]])
-                    else:
+                # Process tags differently based on file format
+                if file.lower().endswith('.mp3'):
+                    # Handle ID3 tags in MP3 files
+                    for tag in audio.keys():
+                        frame = audio[tag]
+                        if isinstance(frame, TXXX):  # Check for ID3v2 TXXX tags
+                            desc = frame.desc
+                            if desc.startswith('liq_') or (args.remove_replaygain and desc.startswith('replaygain_')):
+                                tags_to_remove.append(tag)
+                                if args.backup_metadata:
+                                    csv_writer.writerow([filepath, tag, desc, frame.text[0]])
+                        else:
+                            if tag.startswith('liq_') or (args.remove_replaygain and tag.startswith('replaygain_')):
+                                tags_to_remove.append(tag)
+                                if args.backup_metadata:
+                                    csv_writer.writerow([filepath, tag, '', str(frame)])
+                elif file.lower().endswith(('.flac', '.ogg', '.opus', '.ape')):
+                    # Handle Vorbis Comments and APEv2 metadata
+                    for tag in audio.keys():
                         if tag.startswith('liq_') or (args.remove_replaygain and tag.startswith('replaygain_')):
                             tags_to_remove.append(tag)
                             if args.backup_metadata:
-                                csv_writer.writerow([filepath, tag, '', str(frame)])
-
+                                csv_writer.writerow([filepath, tag, '', str(audio[tag])])
+                elif file.lower().endswith('.m4a'):
+                    # Handle MP4 metadata
+                    for atom in audio.keys():
+                        if atom.startswith('com.liq_') or (args.remove_replaygain and atom.startswith('com.replaygain_')):
+                            tags_to_remove.append(atom)
+                            if args.backup_metadata:
+                                csv_writer.writerow([filepath, atom, '', str(audio[atom])])
+                else:
+                    # Unsupported file format
+                    print(f"Unsupported file format: {file}. Skipping.")
+                
+                # Remove tags if any were found
                 if tags_to_remove:
                     print(f"Found tags to remove in {file}: {tags_to_remove}")
                     if args.dry_run:
                         print("Dry run: would remove tags.")
                     else:
-                        for tag in tags_to_remove:
-                            del audio[tag]
-                        audio.save()
-                        print(f"Removed tags from {file}")
+                        try:
+                            for tag in tags_to_remove:
+                                del audio[tag]
+                            audio.save()
+                            print(f"Removed tags from {file}")
+                        except Exception as e:
+                            print(f"Failed to remove tags from {file}: {e}")
                 else:
                     print(f"No tags to be removed in {file}")
+
 
     if args.backup_metadata:
         backup_csv.close()
