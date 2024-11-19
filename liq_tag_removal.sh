@@ -63,7 +63,7 @@ def ensure_mutagen_installed():
 def main():
     parser = argparse.ArgumentParser(description='Remove certain meta tags from audio files.')
     parser.add_argument('-p', '--path', required=True, help='Path to directory with audio files')
-    parser.add_argument('-e', '--extensions', default='mp3,flac,ogg,opus,m4a,wav,aiff,ape', help='File extension pattern (comma-separated, default: mp3,flac,ogg,opus,m4a,wav,aiff,ape)')
+    parser.add_argument('-e', '--extensions', default='mp3', help='File extension pattern (comma-separated, default: mp3)')
     parser.add_argument('-r', '--remove-replaygain', action='store_true', help='Remove "replaygain_" tags')
     parser.add_argument('-b', '--backup-metadata', action='store_true', help='Backup metadata to CSV file')
     parser.add_argument('-d', '--dry-run', action='store_true', help='Dry run, just showing what files and tags would be affected')
